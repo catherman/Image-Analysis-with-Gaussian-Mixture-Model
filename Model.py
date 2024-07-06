@@ -1,53 +1,49 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# Implementing EM for MNIST dataset. GMM 
+# Implementing GMM for MNIST dataset.  
 # 
-# Implement the EM algorithm for fitting a Gaussian mixture model for the MNIST handwritten
-# digits dataset. For this question, we reduce the dataset to be only two cases, of digits “2” and “6” only. 
+# Below is the code to Implement the EM algorithm for fitting a Gaussian mixture model for the MNIST handwritten
+# digits dataset. Here, we reduce the dataset to be only two cases, of digits “2” and “6” only. 
 # 
-# Thus, you will fit GMM with C = 2. 
+# Thus, we will fit GMM with C = 2. 
 # 
-# Use the data file data.mat or data.dat. True label of the data are also provided in label.mat and label.dat.
+# Data: data.mat & label.mat
 # The matrix images is of size 784-by-1990, i.e., there are 1990 images in total, and each
 # column of the matrix corresponds to one image of size 28-by-28 pixels (the image is vectorized;
 # the original image can be recovered by mapping the vector into a matrix).
 # 
-# First use PCA to reduce the dimensionality of the data before applying to EM. 
+# First, we use PCA to reduce the dimensionality of the data before applying to EM. 
 # PCA of MNIST handwritten digits dataset
 # 
 # We will put all “6” and “2” digits together, to project the original data into 4-dimensional vectors.
 # 
-# Now implement EM algorithm for the projected data (with 4-dimensions).
-# (In this question, we use the same set of data from the provided data files for
-# training and testing)
+# Next, we implement EM algorithm for the projected data (with 4-dimensions).
+# (Here we use the same set of data for training and testing)
 #     
-# (a) (10 points) Implement EM algorithm yourself. Use the following initialization
+# (a) To Implement EM algorithm "by hand", we use the following initialization:
 # • initialization for mean: random Gaussian vector with zero mean
 # • initialization for covariance: generate two Gaussian random matrix of size n-byn:
 # S1 and S2, and initialize the covariance matrix for the two components are 
 # 
 # $$Σ_{1}=S_{1}S_{1}^{T}+I_{n} and Σ_{2}=S_{2}S_{2}^{T}+I_{n}$$
 # 
-# where $I_{n}$ is an identity matrix of size n-by-n. Plot the log-likelihood function versus the number of iterations to show your algorithm is converging.
+# where $I_{n}$ is an identity matrix of size n-by-n. We will plot the log-likelihood function vs. the number of iterations to show the algorithm is converging.
 # 
-# (b) (20 points) Report, the fitted GMM model when EM has terminated in your algorithms
-# as follows. Report the weights for each component, and the mean of each component,
+# (b) We report the fitted GMM model when EM has terminated in the algorithms
+# as follows: We report the weights for each component, and the mean of each component,
 # by mapping them back to the original space and reformat the vector to make them
-# into 28-by-28 matrices and show images. Ideally, you should be able to see these
-# means corresponds to some kind of “average” images. You can report the two 4-by-4
+# into 28-by-28 matrices and show images. Ideally, we should be able to see these
+# means corresponds to some kind of “average” images. We will report the two 4-by-4
 # covariance matrices by visualizing their intensities (e.g., using a gray scaled image or
 # heat map).
 # 
-# (c) (10 points) Use the τik
+# (c) We will Use the τik
 # to infer the labels of the images, and compare with the true labels.
-# Report the mis-classification rate for digits “2” and “6” respectively. Perform K-means
-# clustering with K = 2 (you may call a package or use the code from your previous
-# homework). Find out the mis-classification rate for digits “2” and “6” respectively,
-# and compare with GMM. Which one achieves the better performance?
-# 4.
-
-# In[1]:
+# We report the mis-classification rate for digits “2” and “6” respectively; & perform K-means
+# clustering with K = 2.
+# We will show the mis-classification rate for digits “2” and “6” respectively,
+# and compare with GMM, & identify which one achieves the better performance.
 
 
 import numpy as np
@@ -147,12 +143,11 @@ data_s.shape
 # 
 # Dimensions of the the eigen vector matrix are original dimensions x reduced dimensions which in this case is 784 x 4. When you multiply the original data matrix (1900x784) with eigen vector matrix (784x4), dimensions of the product become 1990x4.
 # 
-# You should report the following for b. weights for each component: 
+# We will report the following for b. weights for each component: 
 # mu and reshaped back to show the images; sigma in 4 x 4  as a heat map or grey scale image 
 # 
-# Terminology Question re: "weights for each component".   Is "component" a Gaussian Model Mixture component -- or a Principal Component?
 # 
-# My understanding is the former:  the "weights" are designated by PI(k), where k is the cluster number.  In this case PI has 2 values (one for the "2" and one for the "6").
+# The "weights" are designated by PI(k), where k is the cluster number.  In this case PI has 2 values (one for the "2" and one for the "6").
 # 
 
 # In[10]:
@@ -164,7 +159,7 @@ data.shape
 
 # Now implement EM algorithm for the projected data (with 4-dimensions).
 # 
-# (a) (10 points) Implement EM algorithm yourself. Use the following initialization
+# (a) Here we implement the EM algorithm. Use the following initialization
 # • initialization for mean: random Gaussian vector with zero mean
 # • initialization for covariance: generate two Gaussian random matrix of size n-byn:
 # S1 and S2, and initialize the covariance matrix for the two components are 
@@ -281,7 +276,7 @@ plt.title('Itreations & Log-likelihood: 34 Itreations to Converge')
 # In[15]:
 
 
-# ### viz: mean and covariance matrix
+# ### Viz: mean and covariance matrix
 fig2, ax2 = plt.subplots(2, 2)
 for ii in range(k):
     im = mu_new[ii].reshape(28, 28)
@@ -314,22 +309,21 @@ acc6 = np.max([acc6, 1-acc6])
 print('Accuracy 6:', str(acc6))
 
 
-# (b) (20 points) Report, the fitted GMM model when EM has terminated in your algorithms
-# as follows. Report the weights for each component, and the mean of each component,
+# (b) Report of the fitted GMM model when EM has terminated in the algorithms
+# as follows. Report of the weights for each component, and the mean of each component,
 # by mapping them back to the original space and reformat the vector to make them
-# into 28-by-28 matrices and show images. Ideally, you should be able to see these
-# means corresponds to some kind of “average” images. You can report the two 4-by-4
+# into 28-by-28 matrices and show images. We  see these
+# means corresponds to an “average” of the images. We report the two 4-by-4
 # covariance matrices by visualizing their intensities (e.g., using a gray scaled image or
 # heat map).
 # 
-# (c) (10 points) Use the τik
+# (c) We use the τik
 # to infer the labels of the images, and compare with the true labels.
 # Report the mis-classification rate for digits “2” and “6” respectively. 
 # 
-# Perform K-means clustering with K = 2 (you may call a package or use the code from your previous
-# homework). Find out the mis-classification rate for digits “2” and “6” respectively,
-# and compare with GMM. Which one achieves the better performance?
-# 4.
+# Here, we perform K-means clustering with K = 2.  We show the mis-classification rate for digits “2” and “6” respectively,
+# and compare with GMM. We determine the one achieves the better performance.
+# 
 # 
 # K-means on MNIST dataset
 # To compute purity , each cluster is assigned to the class which is most frequent in the cluster, and then the accuracy of this assignment is measured by counting the number of correctly assigned documents and dividing by $N$. Bad clusterings have purity values close to 0, a perfect clustering has a purity of 1
