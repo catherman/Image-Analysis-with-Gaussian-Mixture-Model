@@ -50,16 +50,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.io as sio
 
-
-# In[2]:
-
-
 data_raw = sio.loadmat('data.mat')  
 label_raw = sio.loadmat('label.mat')  
-
-
-# In[3]:
-
 
 def standardize_pixel_2 (xtrain):
     xtrain_raw = data_raw[xtrain]
@@ -69,10 +61,6 @@ def standardize_pixel_2 (xtrain):
 ndata_a, data_raw2 = standardize_pixel_2('data')
 ndata_a.shape, data_raw2.shape
 
-
-# In[4]:
-
-
 def standardize_label (xtrain):
     xtrain_raw = label_raw[xtrain]
     xtrain_raw = xtrain_raw.astype(float) 
@@ -81,16 +69,9 @@ def standardize_label (xtrain):
 label_st, label_a = standardize_label('trueLabel')
 label_st.shape, label_a.shape
 
-
-# In[5]:
-
-
 ndata =ndata_a.T
 label_aa=label_a.T
 ndata.shape, label_aa.shape
-
-
-# In[6]:
 
 
 label = label_aa[:,0]
@@ -107,9 +88,6 @@ label.shape
 # We will put all “6” and “2” digits together, to project the original data into 4-dimensional vectors.
 # 
 
-# In[7]:
-
-
 m, n = ndata.shape
 C = np.matmul(ndata.T, ndata)/m
 # pca the data
@@ -123,42 +101,27 @@ V = V.real
 data_r = np.matmul(ndata,V)
 data_r.shape , ndata.shape,  V.shape #(784, 4)
 
-
-# In[8]:
-
-
 def reconstruct_data(pdata, evectors, K):
     X_reconstructed =  np.matmul(pdata[:, :K], evectors[:, :K].T)# + X_mean
     return X_reconstructed
-
-
-# In[9]:
-
 
 data_s = reconstruct_data(data_r, V, 4)
 data_s.shape
 
 
-# EDX notes: Each individual image is represented by 784x1, which is then being reduced to 4x1. Since you have 1990 images, the ending shape should be 4x1990.
-# 
-# Dimensions of the the eigen vector matrix are original dimensions x reduced dimensions which in this case is 784 x 4. When you multiply the original data matrix (1900x784) with eigen vector matrix (784x4), dimensions of the product become 1990x4.
-# 
+# EDX notes: Each individual image is represented by 784x1, which is then being reduced to 4x1. 
+# Since you have 1990 images, the ending shape should be 4x1990.
+# Dimensions of the the eigen vector matrix are original dimensions x reduced dimensions which 
+# in this case is 784 x 4. When you multiply the original data matrix (1900x784) with eigen vector matrix (784x4), dimensions of the product become 1990x4.
 # We will report the following for b. weights for each component: 
 # mu and reshaped back to show the images; sigma in 4 x 4  as a heat map or grey scale image 
-# 
-# 
 # The "weights" are designated by PI(k), where k is the cluster number.  In this case PI has 2 values (one for the "2" and one for the "6").
-# 
-
-# In[10]:
-
 
 data = data_s.T
 data.shape
 
 
 # Now implement EM algorithm for the projected data (with 4-dimensions).
-# 
 # (a) Here we implement the EM algorithm. Use the following initialization
 # • initialization for mean: random Gaussian vector with zero mean
 # • initialization for covariance: generate two Gaussian random matrix of size n-byn:
@@ -168,10 +131,6 @@ data.shape
 # 
 # where $I_{n}$ is an identity matrix of size n-by-n. Plot the log-likelihood function versus the number of iterations to show your algorithm is converging.
 # 
-# 
-
-# In[11]:
-
 
 n,m = data.shape
 
@@ -191,10 +150,6 @@ for ii in range(k):
     sigma_old[ii] = tmp
 sigma_new = sigma_old + 10
 
-
-# In[12]:
-
-
 #  prior init
 pi_old = np.random.random(k)
 pi_old = pi_old/pi_old.sum()
@@ -208,10 +163,6 @@ itt = 1
 maxIter =35
 ntrunc = 5 # truncation lowrank approx. no.
 ll_flag = 1000 # see  log-likelihood change w/ iterations
-
-
-# In[13]:
-
 
 def lrpdf(data, mu, sigma, k):
     '''
@@ -232,10 +183,6 @@ def lrpdf(data, mu, sigma, k):
     cterm = - np.sum(np.log(st))/2
     logl = eterm + cterm
     return logl
-
-
-# In[14]:
-
 
 while itt<maxIter:
     print('Iteration: ',str(itt))
@@ -272,10 +219,6 @@ while itt<maxIter:
 plt.plot(np.array(ll_all)/m)  #converging
 plt.title('Itreations & Log-likelihood: 34 Itreations to Converge')
 
-
-# In[15]:
-
-
 # ### Viz: mean and covariance matrix
 fig2, ax2 = plt.subplots(2, 2)
 for ii in range(k):
@@ -289,10 +232,6 @@ for ii in range(k):
     ax2[ii, 1].set_title('Covariance Matrix')
     ax2[ii, 1].set_xticks([])
     ax2[ii, 1].set_yticks([])
-
-
-# In[16]:
-
 
 # Accuracy
 idx2 = np.where(label==2)[0]
@@ -328,9 +267,6 @@ print('Accuracy 6:', str(acc6))
 # K-means on MNIST dataset
 # To compute purity , each cluster is assigned to the class which is most frequent in the cluster, and then the accuracy of this assignment is measured by counting the number of correctly assigned documents and dividing by $N$. Bad clusterings have purity values close to 0, a perfect clustering has a purity of 1
 
-# In[17]:
-
-
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -355,10 +291,6 @@ from scipy.spatial import distance
 
 pd.options.display.max_columns = None
 pd.options.display.max_rows = None
-
-
-# In[18]:
-
 
 def within_cluster_sum_of_s(S):
     return np.sum(np.amin(S, axis=1))
@@ -393,53 +325,20 @@ def kmeans_processor_DDD(X, k, max_steps=np.inf):
     print ("Iterations to converge=", i)
     return labels, centers
 
-
-# In[19]:
-
-
 labels_m, centers_m = kmeans_processor_DDD(data_s, 2)
-
-
-# In[20]:
-
 
 labels_m.shape, centers_m.shape, data_s.shape
 
-
-# In[21]:
-
-
 labels_m
 
-
-# In[22]:
-
-
 centers_m
-
-
-# In[23]:
-
 
 centroids_r = centers_m.reshape(2,28,28)
 centroids = centroids_r * 255
 centroids.shape
 
-
-# In[24]:
-
-
 plt.imshow(centroids[0].T, cmap='gray')
-
-
-# In[25]:
-
-
 plt.imshow(centroids[1].T, cmap='gray')
-
-
-# In[26]:
-
 
 def purity_score_processor_m (centers, c):
     unique, counts = np.unique(centers[c], return_counts=True)
@@ -448,11 +347,6 @@ def purity_score_processor_m (centers, c):
     purity_score = np.round(purity_score_raw, 3)
     print('Purity score w/ Manhattan Distance for centroid: ', c)
     print(purity_score)
-    
-
-
-# In[27]:
-
 
 purity_score_all_centroids ={}
 for n in [0,1]:
