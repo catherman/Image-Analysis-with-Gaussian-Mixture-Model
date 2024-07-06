@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# ### 3. Implementing EM for MNIST dataset. GMM [40 points]
+# Implementing EM for MNIST dataset. GMM 
 # 
 # Implement the EM algorithm for fitting a Gaussian mixture model for the MNIST handwritten
 # digits dataset. For this question, we reduce the dataset to be only two cases, of digits “2” and “6” only. 
